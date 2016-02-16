@@ -17,10 +17,18 @@ public class SelectServerSocketChannelDemo {
     public static void startServer() throws Exception {
 
         /***
-         * 
+         *open socket
+         * when we use nio ,we want to open socket ,but if we really understand the meaning of it ,i think it's hard to
+         * say.
          */
         ServerSocketChannel serverSocketChannel = ServerSocketChannel.open();
+        /**
+         * this function will distribute the temparoty port for the channel
+         */
         serverSocketChannel.bind(new InetSocketAddress(8999));
+        /**
+         * the selector object will act as Asynchronous
+         */
         Selector selector = Selector.open();
         serverSocketChannel.configureBlocking(false);
         serverSocketChannel.register(selector, SelectionKey.OP_ACCEPT);
@@ -34,6 +42,7 @@ public class SelectServerSocketChannelDemo {
                     if (key.isAcceptable()) {
                         SocketChannel socketChannel = ((ServerSocketChannel) key.channel()).accept();
                         ByteBuffer buf = ByteBuffer.allocate(40);
+                        //read socketChannel
                         int size = socketChannel.read(buf);
                         while (size > 0) {
                             buf.flip();
